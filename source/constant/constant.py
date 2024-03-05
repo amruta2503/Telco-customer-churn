@@ -1,0 +1,16 @@
+TARGET_COLUMN = "Churn"
+ARTIFACT_DIR = "artifact"
+TRAIN_PIPELINE_NAME = "train_pipeline"
+FILE_NAME = "training_data.csv"
+
+TRAIN_FILE_NAME = "train.csv"
+TEST_FILE_NAME = "test.csv"
+
+MONGODB_URL_KEY = "mongodb+srv://amrutasharnangat2503:mongo@cluster0.r6fy3lw.mongodb.net/?retryWrites=true&w=majority"
+DATABASE_NAME = 'dataset'
+
+DI_COLLECTION_NAME = 'telco-customer-churn'
+DI_DIR_NAME = "data_ingestion_dir"
+DI_INGESTED = "ingested_dir"
+DI_FEATURE_STORE_DIR = "feature_store_dir"
+DI_TRAIN_TEST_SPLIT_RATIO = 0.2
