@@ -3,8 +3,9 @@ from datetime import datetime
 import os
 
 
-class TrainingPipelineConfig:
+class PipelineConfig:
     def __init__(self, global_timestamp):
+        self.global_timestamp = global_timestamp
         self.target_column = constant.TARGET_COLUMN
         self.train_pipeline_name = constant.TRAIN_PIPELINE_NAME
         self.artifact_dir = os.path.join(constant.ARTIFACT_DIR,global_timestamp)
