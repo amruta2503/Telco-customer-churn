@@ -4,12 +4,10 @@ import os
 
 
 class TrainingPipelineConfig:
-    def __init__(self, timestamp=datetime.now()):
-        timestamp = timestamp.strftime('%m_%d_%Y_%H_%M_%S')
-
+    def __init__(self, global_timestamp):
         self.target_column = constant.TARGET_COLUMN
         self.train_pipeline_name = constant.TRAIN_PIPELINE_NAME
-        self.artifact_dir = os.path.join(constant.ARTIFACT_DIR,timestamp)
+        self.artifact_dir = os.path.join(constant.ARTIFACT_DIR,global_timestamp)
         self.mongodb_url_key = constant.MONGODB_URL_KEY
         self.database_name = constant.DATABASE_NAME
         self.collection_name = constant.DI_COLLECTION_NAME
