@@ -37,6 +37,8 @@ class DataIngestion:
         try:
             logging.info("Start:data train test split")
 
+            #print("Value of 'data' before train_test_split:", data)
+
             train_set,test_set = train_test_split(data,train_size=self.utility_config.train_test_split_ratio,random_state=45)
 
             dir_name = os.path.dirname(self.utility_config.train_filename)
@@ -52,16 +54,51 @@ class DataIngestion:
 
     def clean_data(self,data):
         try:
-            pass
+            logging.info("start:Data clean")
+
+            data = data.drop_duplicates()
+
+            data = data.loc[:, data.nunique() > 1]
+
+            drop_column = []
+
+            for col in data.select_dtypes(include=['object']).columns:
+
+                unique_count = data[col].nunique()
+                if unique_count / len(data) > 0.5:
+                    data.drop(col, axis=1, inplace=True)
+                    drop_column.append(col)
+
+            logging.info(f"dropped columns: {drop_column}")
+
+            logging.info("complete:Data clean")
+
+            return data
         except ChurnException as e:
             pass
 
     def process_data(self,data):
         try:
-            pass
+            logging.info("start:Process data")
+
+            for col in self.utility_config.mandatory_col_list:
+
+                if col not in data.columns:
+                    raise ChurnException(f"missing mandatory column: {col}")
+
+                if data[col].dtype != self.utility_config.mandatory_col_data_type[col]:
+                    try:
+                        data[col] = data[col].astype(self.utility_config.mandatory_col_data_type[col])
+                    except ValueError as e:
+                        raise ChurnException(f"ERROR: converting data type for column: {col}")
+
+            logging.info("complete:Process data")
+            return data
         except ChurnException as e:
             pass
 
     def initiate_data_ingestion(self):
         data=self.export_data_into_feature_store()
+        data = self.clean_data(data)
+        data = self.process_data(data)
         self.split_data_train_test(data)

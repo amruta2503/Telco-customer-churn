@@ -18,6 +18,9 @@ class PipelineConfig:
         self.train_filename = os.path.join(self.di_dir,constant.DI_INGESTED,constant.TRAIN_FILE_NAME)
         self.test_filename = os.path.join(self.di_dir,constant.DI_INGESTED,constant.TEST_FILE_NAME)
 
+        self.mandatory_col_list = constant.DI_MANDATORY_COLUMN_LIST
+        self.mandatory_col_data_type = constant.DI_MANDATORY_COLUMN_DATA_TYPE
+
 
 
 
