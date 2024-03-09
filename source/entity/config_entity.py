@@ -28,6 +28,10 @@ class PipelineConfig:
         self.train_file_name = constant.TRAIN_FILE_NAME
         self.test_file_name = constant.TEST_FILE_NAME
 
+        self.dt_binary_class_col = constant.DT_BINARY_CLASS_COL
+        self.dt_multi_class_col = constant.DT_MULTI_CLASS_COL
+        self.dt_multi_class_encoder = constant.DT_ENCODER_PATH
+
         self.dv_train_file_path = os.path.join(self.artifact_dir, constant.DV_DIR_NAME)
         self.dv_test_file_path = os.path.join(self.artifact_dir, constant.DV_DIR_NAME)
 
