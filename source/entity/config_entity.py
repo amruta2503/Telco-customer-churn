@@ -23,6 +23,14 @@ class PipelineConfig:
 
         self.imputation_values_file = constant.DV_IMPUTATION_VALUES_FILE_NAME
 
+        self.outlier_params_file = constant.DV_OUTLIER_PARAMS_FILE
+
+        self.train_file_name = constant.TRAIN_FILE_NAME
+        self.test_file_name = constant.TEST_FILE_NAME
+
+        self.dv_train_file_path = os.path.join(self.artifact_dir, constant.DV_DIR_NAME)
+        self.dv_test_file_path = os.path.join(self.artifact_dir, constant.DV_DIR_NAME)
+
 
 
 
