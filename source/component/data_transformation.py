@@ -38,9 +38,71 @@ class DataTransformation:
 
                 data_encoded = encoder.transform(data[self.utility_config.dt_multi_class_col])
 
-            data = pd.concat([data.drop(columns=self.utlity_config.dt_multi_class_col), data_encoded], axis=1)
+            data = pd.concat([data.drop(columns=self.utility_config.dt_multi_class_col), data_encoded], axis=1)
 
             return data
+        except ChurnException as e:
+            raise e
+
+    def min_max_scaling(self, data, type=None):
+
+        if type == 'train':
+
+            numeric_columns = data.select_dtypes(include=['float64', 'int64']).columns
+
+            scaler = MinMaxScaler()
+
+            scaler.fit(data[numeric_columns])
+
+            scaler_details = pd.DataFrame({'Feature': numeric_columns,
+                                           'Scaler_Min': scaler.data_min_,
+                                           'Scaler_Max': scaler.data_max_
+                                           })
+            scaler_details.to_csv('source/ml/scaler_details.csv', index=False)
+
+            scaled_data = scaler.transform(data[numeric_columns])
+
+            data.loc[:, numeric_columns] = scaled_data
+            data['Churn'] = self.utility_config.target_column
+
+        else:
+            #scaler_details = pd.read_csv('source/ml/scaler_details.csv')
+
+            #for col in data.select_dtypes(include=['float64', 'int64']).columns:
+            #    data[col] = data[col].astype('float64')
+
+            #   temp = scaler_details[scaler_details['Feature'] == col]
+
+            #    if not temp.empty:
+
+            #        min = temp.loc[temp.index[0], 'Scaler_Min']
+            #        max = temp.loc[temp.index[0], 'Scaler_Max']
+
+
+            #        data[col] = (data[col]-min) / (max-min)
+
+
+            #   else:
+            #        print(f"No scaling detils available for feature: {col}")
+
+            #data['Churn'] = self.utility_config.target_column
+
+        #return data
+
+            pass
+    def oversample_smote(self, data):
+        try:
+
+            x = data.drop(columns=['Churn'])
+            y = data['Churn']
+
+            smote = SMOTE()
+
+            x_resmapled, y_resampled = smote.fit_resample(x, y)
+
+            return pd.concat(
+                [pd.DataFrame(x_resmapled, columns=x.columns), pd.DataFrame(y_resampled, columns=['Churn'])], axis=1)
+
         except ChurnException as e:
             raise e
 
@@ -64,3 +126,16 @@ class DataTransformation:
 
         train_data = self.feature_encoding(train_data, target='Churn', save_encoder_path=self.utility_config.dt_multi_class_encoder)
         test_data = self.feature_encoding(test_data, target='', load_encoder_path=self.utility_config.dt_multi_class_encoder, type='test')
+
+        self.utility_config.target_column = train_data['Churn']
+        train_data.drop('Churn', axis=1, inplace=True)
+        train_data = self.min_max_scaling(train_data, type='train')
+
+        self.utility_config.target_column = test_data['Churn']
+        test_data.drop('Churn', axis=1, inplace=True)
+        test_data = self.min_max_scaling(test_data, type='test')
+
+        train_data = self.oversample_smote(train_data)
+
+        self.export_data_file(train_data, self.utility_config.train_file_name, self.utility_config.dt_train_file_path)
+        self.export_data_file(test_data, self.utility_config.test_file_name, self.utility_config.dt_test_file_path)

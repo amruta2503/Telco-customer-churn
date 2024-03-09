@@ -1,7 +1,7 @@
 from source.entity.config_entity import PipelineConfig
 from source.component.data_ingestion import DataIngestion
 from source.component.data_validation import DataValidation
-
+from source.component.data_transformation import DataTransformation
 
 class DataPipeline:
 
@@ -16,6 +16,11 @@ class DataPipeline:
         data_validation_obj = DataValidation(self.utility_config)
         data_validation_obj.initiate_data_validation()
 
+    def start_data_transformation(self):
+        data_transformation_obj = DataTransformation(self.utility_config)
+        data_transformation_obj.initiate_data_transformation()
+
     def run_train_pipeline(self):
         self.start_data_ingestion()
         self.start_data_validation()
+        self.start_data_transformation()
