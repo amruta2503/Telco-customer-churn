@@ -21,6 +21,8 @@ class PipelineConfig:
         self.mandatory_col_list = constant.DI_MANDATORY_COLUMN_LIST
         self.mandatory_col_data_type = constant.DI_MANDATORY_COLUMN_DATA_TYPE
 
+        self.imputation_values_file = constant.DV_IMPUTATION_VALUES_FILE_NAME
+
 
 
 
